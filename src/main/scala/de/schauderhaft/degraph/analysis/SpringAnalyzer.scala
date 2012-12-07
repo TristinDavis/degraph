@@ -30,16 +30,18 @@ object SpringAnalyzer {
             val srcFile = Source.fromFile(file)
             val reader = new XMLEventReader(srcFile)
 
-            for {
-                event <- reader
-                if (event.isInstanceOf[EvElemStart])
-                EvElemStart(_, name, attributes, _) = event
-                if (name == "bean")
-            } g.add(makeGraphElement(attributes))
+            classes(reader).foreach(g.add(_))
         }
 
         g
     }
+
+    private def classes(reader: XMLEventReader) = for {
+        event <- reader
+        if (event.isInstanceOf[EvElemStart])
+        EvElemStart(_, name, attributes, _) = event
+        if (name == "bean")
+    } yield makeGraphElement(attributes)
 
     private def makeGraphElement(attributes: MetaData) = attributes.get("class").get(0).toString
 
