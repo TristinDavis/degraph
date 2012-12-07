@@ -24,15 +24,18 @@ import scala.xml.MetaData
 object SpringAnalyzer {
 
     def analyze(file: File): Graph = {
-        val g = new Graph
         if (file != null) {
 
-            val srcFile = Source.fromFile(file)
-            val reader = new XMLEventReader(srcFile)
+            val source = Source.fromFile(file)
+            graphFromSource(source)
+        } else
+            new Graph
+    }
 
-            classes(reader).foreach(g.add(_))
-        }
-
+    def graphFromSource(source: Source) = {
+        val reader = new XMLEventReader(source)
+        val g = new Graph
+        classes(reader).foreach(g.add(_))
         g
     }
 

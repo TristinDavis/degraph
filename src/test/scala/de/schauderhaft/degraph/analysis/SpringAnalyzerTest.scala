@@ -5,6 +5,8 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import de.schauderhaft.degraph.graph.Graph
 import java.io.File
+import javax.xml.transform.Source
+import scala.io.Source
 
 @RunWith(classOf[JUnitRunner])
 class SpringAnalyzerTest extends FunSuite {
@@ -16,9 +18,7 @@ class SpringAnalyzerTest extends FunSuite {
     }
 
     test("Graph must have one node named de.schauderhaft.SomeClass") {
-
         val res = this.getClass().getResource("/singleBean.xml")
-        //        res should not be (null)
         val graph: Graph = SpringAnalyzer.analyze(new File(res.getPath()))
         graph.allNodes should contain("de.schauderhaft.SomeClass".asInstanceOf[AnyRef])
 
@@ -31,4 +31,8 @@ class SpringAnalyzerTest extends FunSuite {
         graph.allNodes should contain("de.schauderhaft.SomeOtherClass".asInstanceOf[AnyRef])
 
     }
+
+    // bean references
+    // includes
+
 }
