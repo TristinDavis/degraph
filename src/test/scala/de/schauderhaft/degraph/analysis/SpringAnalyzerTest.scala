@@ -24,9 +24,11 @@ class SpringAnalyzerTest extends FunSuite {
 
     }
 
-    //    test("identify EvElemStart Element"){
-    //    	val res = this.getClass().getResource("/singleBean.xml")
-    //    	SpringAnalyzer.findEvElement(res)		
-    //    }
+    test("Graph must have two nodes") {
+        val res = this.getClass().getResource("/multiBean.xml")
+        val graph: Graph = SpringAnalyzer.analyze(new File(res.getPath()))
+        graph.allNodes should contain("de.schauderhaft.SomeClass".asInstanceOf[AnyRef])
+        graph.allNodes should contain("de.schauderhaft.MultiClass".asInstanceOf[AnyRef])
 
+    }
 }
