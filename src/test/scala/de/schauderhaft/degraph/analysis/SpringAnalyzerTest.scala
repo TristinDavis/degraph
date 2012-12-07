@@ -28,7 +28,7 @@ class SpringAnalyzerTest extends FunSuite {
         val res = this.getClass().getResource("/multiBean.xml")
         val graph: Graph = SpringAnalyzer.analyze(new File(res.getPath()))
         graph.allNodes should contain("de.schauderhaft.SomeClass".asInstanceOf[AnyRef])
-        graph.allNodes should contain("de.schauderhaft.MultiClass".asInstanceOf[AnyRef])
+        graph.allNodes should contain("de.schauderhaft.SomeOtherClass".asInstanceOf[AnyRef])
 
     }
 }
