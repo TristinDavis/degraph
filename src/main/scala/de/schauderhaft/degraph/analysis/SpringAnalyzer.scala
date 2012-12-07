@@ -24,24 +24,23 @@ import scala.xml.MetaData
 object SpringAnalyzer {
 
     def analyze(file: File): Graph = {
-        var g = new Graph
+        val g = new Graph
         if (file != null) {
 
             val srcFile = Source.fromFile(file)
-            if (srcFile != null) {
-                val reader = new XMLEventReader(srcFile)
+            val reader = new XMLEventReader(srcFile)
 
-                while (reader.hasNext) {
-                    reader.next() match {
-                        case EvElemStart(_, name, attributes, _) if (name == "bean") =>
-                            val node = attributes.get("class").get(0)
-
-                            g.add(node.toString)
-                        case _ =>
-                    }
-                }
-            }
+            for {
+                event <- reader
+                if (event.isInstanceOf[EvElemStart])
+                EvElemStart(_, name, attributes, _) = event
+                if (name == "bean")
+            } g.add(makeGraphElement(attributes))
         }
+
         g
     }
+
+    private def makeGraphElement(attributes: MetaData) = attributes.get("class").get(0).toString
+
 }
