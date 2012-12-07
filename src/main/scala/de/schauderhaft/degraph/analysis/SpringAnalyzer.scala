@@ -1,8 +1,12 @@
 package de.schauderhaft.degraph.analysis
 
-import de.schauderhaft.degraph.graph.Graph
-import de.schauderhaft.degraph.graph.Graph
 import java.io.File
+import scala.io.Source
+import de.schauderhaft.degraph.graph.Graph
+import de.schauderhaft.degraph.graph.Graph
+import scala.xml.pull.XMLEventReader
+import scala.xml.pull.EvElemStart
+import scala.xml.MetaData
 
 /**
  * provides a single method that
@@ -20,6 +24,24 @@ import java.io.File
 object SpringAnalyzer {
 
     def analyze(file: File): Graph = {
-        new Graph
+        var g = new Graph
+        if (file != null) {
+
+            val srcFile = Source.fromFile(file)
+            if (srcFile != null) {
+                val reader = new XMLEventReader(srcFile)
+
+                while (reader.hasNext) {
+                    reader.next() match {
+                        case EvElemStart(_, name, attributes, _) if (name == "bean") =>
+                            val node = attributes.get("class").get(0)
+
+                            g.add(node.toString)
+                        case _ =>
+                    }
+                }
+            }
+        }
+        g
     }
 }

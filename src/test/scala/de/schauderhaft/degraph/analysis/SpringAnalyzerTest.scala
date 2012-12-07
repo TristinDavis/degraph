@@ -14,9 +14,19 @@ class SpringAnalyzerTest extends FunSuite {
         val graph: Graph = SpringAnalyzer.analyze(null)
         graph should not be (null)
     }
-    test("a") {
-        val graph: Graph = SpringAnalyzer.analyze(new File(this.getClass().getClassLoader().getResource("/singleBean.xml").getPath()))
-        graph.allNodes contains ("myBean")
+
+    test("Graph must have one node named de.schauderhaft.SomeClass") {
+
+        val res = this.getClass().getResource("/singleBean.xml")
+        //        res should not be (null)
+        val graph: Graph = SpringAnalyzer.analyze(new File(res.getPath()))
+        graph.allNodes should contain("de.schauderhaft.SomeClass".asInstanceOf[AnyRef])
+
     }
+
+    //    test("identify EvElemStart Element"){
+    //    	val res = this.getClass().getResource("/singleBean.xml")
+    //    	SpringAnalyzer.findEvElement(res)		
+    //    }
 
 }
