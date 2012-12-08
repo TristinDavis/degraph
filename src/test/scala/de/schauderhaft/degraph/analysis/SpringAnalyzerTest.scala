@@ -13,22 +13,32 @@ class SpringAnalyzerTest extends FunSuite {
     import org.scalatest.matchers.ShouldMatchers._
 
     test("Return value should not be null") {
-        val graph: Graph = SpringAnalyzer.analyze(null)
+        val graph: Graph = new SpringAnalyzer().analyze(null)
         graph should not be (null)
     }
 
     test("Graph must have one node named de.schauderhaft.SomeClass") {
         val res = this.getClass().getResource("/singleBean.xml")
-        val graph: Graph = SpringAnalyzer.analyze(new File(res.getPath()))
+        val graph: Graph = new SpringAnalyzer().analyze(new File(res.getPath()))
         graph.allNodes should contain("de.schauderhaft.SomeClass".asInstanceOf[AnyRef])
 
     }
 
     test("Graph must have two nodes") {
         val res = this.getClass().getResource("/multiBean.xml")
-        val graph: Graph = SpringAnalyzer.analyze(new File(res.getPath()))
+        val graph: Graph = new SpringAnalyzer().analyze(new File(res.getPath()))
         graph.allNodes should contain("de.schauderhaft.SomeClass".asInstanceOf[AnyRef])
         graph.allNodes should contain("de.schauderhaft.SomeOtherClass".asInstanceOf[AnyRef])
+
+    }
+
+    test("analyze(File) calls graphFromSource") {
+        var called = false
+        val res = this.getClass().getResource("/multiBean.xml")
+        val graph: Graph = new SpringAnalyzer(_ => { called = true; new Graph() }).
+            analyze(new File(res.getPath()))
+
+        called should be(true)
 
     }
 
