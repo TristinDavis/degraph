@@ -44,7 +44,7 @@ class WriterTest extends FunSuite with ShouldMatchers {
         (xml \ "graph" \ "nodeElement").text should be("probe")
     }
 
-    test("writing a two connected nodes creates elements for the nodes plus an edge") {
+    test("writing two connected nodes creates elements for the nodes plus an edge") {
         val g = new Graph()
         g.connect("probe1", "probe2")
         val writer = new Writer(
