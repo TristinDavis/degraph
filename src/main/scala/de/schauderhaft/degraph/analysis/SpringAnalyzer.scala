@@ -46,7 +46,7 @@ class SpringAnalyzer(
 
     def analyze(g: Graph): Graph = {
         val file = new File(sourceFolder)
-        if (file.exists()) {
+        if (file.exists() && !file.isDirectory()) {
             graphFromSourceFunc(Source.fromFile(file), g)
         } else
             new Graph

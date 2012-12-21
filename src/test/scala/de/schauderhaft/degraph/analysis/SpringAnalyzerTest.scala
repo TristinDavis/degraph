@@ -44,6 +44,11 @@ class SpringAnalyzerTest extends FunSuite {
 
     }
 
+    test("ignores emtpy directories") {
+        val empty = this.getClass().getResource("/de/schauderhaft/degraph/empty").getPath();
+        val graph: Graph = new SpringAnalyzer(empty).analyze(new Graph)
+        graph should not be null
+    }
     // bean references
     // includes
 
