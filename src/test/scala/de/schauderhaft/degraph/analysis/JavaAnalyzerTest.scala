@@ -10,9 +10,9 @@ import org.scalatest.matchers.ShouldMatchers
 import de.schauderhaft.degraph.graph.Graph
 
 @RunWith(classOf[JUnitRunner])
-class AnalyzerTest extends FunSuite with ShouldMatchers {
+class JavaAnalyzerTest extends FunSuite with ShouldMatchers {
     private val testClassFolder = "./bin"
-    private val graph = Analyzer.analyze(testClassFolder, (x) => x, _ => true)
+    private val graph = new JavaAnalyzer(testClassFolder).analyze(new Graph((x) => x, _ => true))
     def stringNodes = graph.topNodes.map(_.toString)
     def nodeByString(name: String) = graph.topNodes.find(_.toString == name)
 
@@ -34,13 +34,6 @@ class AnalyzerTest extends FunSuite with ShouldMatchers {
 
     test("Dependency from class to class used in annotation") {
         graph should connect("de.schauderhaft.degraph.examples.UsesAnnotation" -> "de.schauderhaft.degraph.examples.MyRunner")
-    }
-
-    test("No self references") {
-        for (
-            n <- graph.topNodes;
-            n2 <- graph.connectionsOf(n)
-        ) n should not be n2
     }
 
     private def connect(connection: (String, String)) = {
