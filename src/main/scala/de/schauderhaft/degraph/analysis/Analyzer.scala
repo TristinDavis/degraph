@@ -25,5 +25,6 @@ object Analyzer {
         val g = new Graph(categorizer, filter, new NoSelfReference(categorizer))
 
         new JavaAnalyzer(sourceFolder).analyze(g)
+        //        new SpringAnalyzer(sourceFolder).analyze(g)
     }
 }

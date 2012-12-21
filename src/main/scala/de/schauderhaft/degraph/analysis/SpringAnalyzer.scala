@@ -41,7 +41,9 @@ object SpringAnalyzer {
  * - if A gets injected into B  B depends on A
  */
 
-class SpringAnalyzer(val graphFromSourceFunc: (Source => Graph) = SpringAnalyzer.graphFromSourceDefault) {
+class SpringAnalyzer(
+    sourceFolder: String,
+    val graphFromSourceFunc: (Source => Graph) = SpringAnalyzer.graphFromSourceDefault) {
 
     def analyze(file: File): Graph = {
         if (file != null) {
