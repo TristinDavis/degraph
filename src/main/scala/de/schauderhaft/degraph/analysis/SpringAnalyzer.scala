@@ -10,9 +10,8 @@ import scala.xml.MetaData
 
 object SpringAnalyzer {
 
-    val graphFromSourceDefault = (source: Source) => {
+    val graphFromSourceDefault = (source: Source, g: Graph) => {
         val reader = new XMLEventReader(source)
-        val g = new Graph
         classes(reader).foreach(g.add(_))
         g
     }
@@ -43,12 +42,12 @@ object SpringAnalyzer {
 
 class SpringAnalyzer(
     sourceFolder: String,
-    val graphFromSourceFunc: (Source => Graph) = SpringAnalyzer.graphFromSourceDefault) {
+    val graphFromSourceFunc: ((Source, Graph) => Graph) = SpringAnalyzer.graphFromSourceDefault) {
 
-    def analyze(): Graph = {
+    def analyze(g: Graph): Graph = {
         val file = new File(sourceFolder)
         if (file.exists()) {
-            graphFromSourceFunc(Source.fromFile(file))
+            graphFromSourceFunc(Source.fromFile(file), g)
         } else
             new Graph
     }
