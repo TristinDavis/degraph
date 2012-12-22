@@ -44,11 +44,25 @@ class SpringAnalyzerTest extends FunSuite {
 
     }
 
-    test("ignores emtpy directories") {
-        val empty = this.getClass().getResource("/de/schauderhaft/degraph/empty").getPath();
+    withTempDir("ignores emtpy directories")(file => {
+        val empty = file.getAbsolutePath()
         val graph: Graph = new SpringAnalyzer(empty).analyze(new Graph)
         graph should not be null
+    })
+
+    def withTempDir(name: String)(testFun: File => Unit) {
+        test(name) {
+            val tmp = System.getProperty("java.io.tmpdir")
+            val file = new File(tmp, "temp" + System.currentTimeMillis() + "dir")
+            file.createNewFile()
+            try {
+                testFun(file)
+            } finally {
+                file.delete()
+            }
+        }
     }
+
     // bean references
     // includes
 
