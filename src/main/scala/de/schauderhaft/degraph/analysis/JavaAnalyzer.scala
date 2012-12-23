@@ -1,10 +1,8 @@
 package de.schauderhaft.degraph.analysis
 
-import java.util.Collections
-
 import scala.collection.JavaConversions.collectionAsScalaIterable
 import scala.collection.JavaConversions.mapAsScalaMap
-
+import scala.collection.JavaConverters._
 import com.jeantessier.classreader.LoadListenerVisitorAdapter
 import com.jeantessier.classreader.TransientClassfileLoader
 import com.jeantessier.dependency.ClassNode
@@ -13,7 +11,6 @@ import com.jeantessier.dependency.FeatureNode
 import com.jeantessier.dependency.Node
 import com.jeantessier.dependency.NodeFactory
 
-import de.schauderhaft.degraph.filter.NoSelfReference
 import de.schauderhaft.degraph.graph.Graph
 
 /**
@@ -30,7 +27,7 @@ class JavaAnalyzer(val sourceFolder: String) {
             val factory = new NodeFactory()
             val visitor = new CodeDependencyCollector(factory)
             loader.addLoadListener(new LoadListenerVisitorAdapter(visitor))
-            loader.load(Collections.singleton(sourceFolder))
+            loader.load(sourceFolder.split(System.getProperty("path.separator")).toSet.asJava)
             factory.getClasses
         }
 

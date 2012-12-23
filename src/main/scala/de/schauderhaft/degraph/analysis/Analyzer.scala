@@ -4,7 +4,7 @@ import java.util.Collections
 
 import scala.collection.JavaConversions.collectionAsScalaIterable
 import scala.collection.JavaConversions.mapAsScalaMap
-
+import scala.collection.JavaConverters._
 import com.jeantessier.classreader.LoadListenerVisitorAdapter
 import com.jeantessier.classreader.TransientClassfileLoader
 import com.jeantessier.dependency.ClassNode

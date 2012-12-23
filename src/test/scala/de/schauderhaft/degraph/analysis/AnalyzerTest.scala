@@ -7,7 +7,7 @@ import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])
 class AnalyzerTest extends FunSuite with ShouldMatchers {
-    private val testClassFolder = "./bin"
+    private val testClassFolder = System.getProperty("java.class.path")
     private val graph = Analyzer.analyze(testClassFolder, (x) => x, _ => true)
 
     test("No self references") {
