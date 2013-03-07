@@ -99,10 +99,18 @@ class Graph(category: Node => Node = (x) => x,
 
     def edgesInCycles: Set[(Node, Node)] = {
         val sliceTypes = internalGraph.nodes.flatMap(_.types)
+        println
+        println(sliceTypes)
+        println("-------------------")
+        val pSlice = slice("Package")
+        println(pSlice)
+        println(pSlice.findCycle)
+
         val edges = (for {
             st <- sliceTypes
-            s <- slice(st).findCycle.toList
-            e <- s.edgeIterator
+            sg = slice(st)
+            c <- sg.findCycle.toList
+            e <- c.edgeIterator
         } yield (e.edge._1.value, e.edge._2.value)).toSet
 
         edges
