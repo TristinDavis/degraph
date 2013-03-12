@@ -11,6 +11,7 @@ import de.schauderhaft.degraph.slicer.PackageCategorizer
 import de.schauderhaft.degraph.slicer.ParallelCategorizer
 import de.schauderhaft.degraph.model.SimpleNode
 import de.schauderhaft.degraph.slicer.PatternMatchingCategorizer
+import de.schauderhaft.degraph.slicer.PatternMatchingCategorizer
 
 @RunWith(classOf[JUnitRunner])
 class GraphCycleTest extends FunSuite with ShouldMatchers {
