@@ -12,6 +12,7 @@ import de.schauderhaft.degraph.slicer.ParallelCategorizer
 import de.schauderhaft.degraph.model.SimpleNode
 import de.schauderhaft.degraph.slicer.PatternMatchingCategorizer
 import de.schauderhaft.degraph.slicer.PatternMatchingCategorizer
+import de.schauderhaft.degraph.slicer.PatternMatchingCategorizer
 
 @RunWith(classOf[JUnitRunner])
 class GraphCycleTest extends FunSuite with ShouldMatchers {
@@ -55,7 +56,8 @@ class GraphCycleTest extends FunSuite with ShouldMatchers {
             (packageNode("de.p3"), packageNode("de.p1"))))
     }
 
-    test("detects slice nodes on every slice type") {
+    test("detects cycle of slice nodes on every slice type") {
+        pending
         val g = new Graph(new ParallelCategorizer(PackageCategorizer,
             PatternMatchingCategorizer("country", "(*).**")))
 
@@ -82,16 +84,15 @@ class GraphCycleTest extends FunSuite with ShouldMatchers {
         implicit val factory = scalax.collection.edge.LkDiEdge
 
         val g = SGraph[Node, LkDiEdge]()
-        g.add(
-            SimpleNode("Package", "com.p2"))
-        g.add(SimpleNode("Package", "com.p3"))
-        g.add(SimpleNode("Package", "de.p1"))
-        g.add(SimpleNode("Package", "de.p2"))
-        g.add(SimpleNode("Package", "de.p3"))
+
+        //        add: SimpleNode(Package,com.p3)->SimpleNode(Package,de.p3)
+        //add: SimpleNode(Package,de.p1)->SimpleNode(Package,de.p2)
+        //add: SimpleNode(Package,de.p2)->SimpleNode(Package,de.p1)
+        //add: SimpleNode(Package,de.p2)->SimpleNode(Package,com.p2)
         g.addLEdge(SimpleNode("Package", "com.p3"), SimpleNode("Package", "de.p3"))('references)
         g.addLEdge(SimpleNode("Package", "de.p1"), SimpleNode("Package", "de.p2"))('references)
-        g.addLEdge(SimpleNode("Package", "de.p2"), SimpleNode("Package", "com.p2"))('references)
         g.addLEdge(SimpleNode("Package", "de.p2"), SimpleNode("Package", "de.p1"))('references)
+        g.addLEdge(SimpleNode("Package", "de.p2"), SimpleNode("Package", "com.p2"))('references)
 
         g.findCycle should not be ('empty)
     }

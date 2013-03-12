@@ -65,13 +65,26 @@ class Graph(category: Node => Node = (x) => x,
     def allNodes: Set[Node] = internalGraph.nodes.map(_.value).toSet
 
     def slice(name: String) = {
+        println(name)
+        println("-----------------")
+        val sliceGraph = SGraph[Node, LkDiEdge]()
+
+        def add(n: Node) = {
+            println("add: " + n)
+            sliceGraph.add(n)
+        }
+
+        def addE(n1: Node, n2: Node) = {
+            println("add: " + n1 + "->" + n2)
+            implicit val factory = scalax.collection.edge.LkDiEdge
+            sliceGraph.addLEdge(n1, n2)(references)
+        }
 
         def sliceNodes = internalGraph.nodes.map(_.value).collect { case n: SimpleNode if (n.nodeType == name) => n }
 
         val sliceNodeFinder = new SliceNodeFinder(name, internalGraph)
 
-        val sliceGraph = SGraph[Node, LkDiEdge]()
-        sliceNodes.foreach(sliceGraph.add(_))
+        sliceNodes.foreach(add(_))
 
         //---------------
         implicit val factory = scalax.collection.edge.LkDiEdge
@@ -81,7 +94,8 @@ class Graph(category: Node => Node = (x) => x,
             if (e.label == references)
             s1 <- sliceNodeFinder.lift(e._1.value)
             s2 <- sliceNodeFinder.lift(e._2.value)
-        } sliceGraph.addLEdge(s1, s2)(references)
+        } addE(s1, s2)
+        println("-------end----------")
 
         sliceGraph
     }
@@ -99,13 +113,7 @@ class Graph(category: Node => Node = (x) => x,
 
     def edgesInCycles: Set[(Node, Node)] = {
         val sliceTypes = internalGraph.nodes.flatMap(_.types)
-        println
-        println(sliceTypes)
-        println("-------------------")
-        val pSlice = slice("Package")
-        println(pSlice)
-        println(pSlice.findCycle)
-
+        printDebugInfo()
         val edges = (for {
             st <- sliceTypes
             sg = slice(st)
@@ -114,6 +122,13 @@ class Graph(category: Node => Node = (x) => x,
         } yield (e.edge._1.value, e.edge._2.value)).toSet
 
         edges
+    }
+    def printDebugInfo() {
+        val pSlice = slice("Package")
+        println(pSlice)
+
+        println(pSlice.findCycle())
+
     }
 }
 
