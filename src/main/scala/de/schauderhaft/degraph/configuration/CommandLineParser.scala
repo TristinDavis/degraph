@@ -9,7 +9,7 @@ object CommandLineParser {
     def parse(args: Seq[String]) = {
         new LazyScallopConf(args) {
 
-            version("Degraph Version 0.0.2.")
+            version("Degraph Version 0.0.3.")
             banner("""Degraph analyses class and jar files and creates graphml documents out of it
 for visualizing dependencies.""")
             footer("""See https://github.com/schauder/degraph for more information""")
@@ -26,7 +26,6 @@ for visualizing dependencies.""")
             val includeFilter = opt[List[String]]("includeFilter",
                 default = Some(List()),
                 descr = "if this argument is given, only those nodes get included in the resulting graph, that match the given regular expression.")
-            val groupings = opt[List[String]]("groupings", default = Some(List()))
             val file = opt[String]("file", default = None)
 
         }
