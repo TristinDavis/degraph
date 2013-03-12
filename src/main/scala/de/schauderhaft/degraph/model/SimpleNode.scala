@@ -1,15 +1,5 @@
 package de.schauderhaft.degraph.model
 
-/**
- * companion object providing factory methods for often needed kinds of Node instances.
- */
-object SimpleNode {
-    final val classType = "Class"
-    final val packageType = "Package"
-    def classNode(name: String) = SimpleNode(classType, name)
-    def packageNode(name: String) = SimpleNode(packageType, name)
-}
-
 sealed trait Node {
     def contains(n: Node): Boolean
     def types: Set[String]
