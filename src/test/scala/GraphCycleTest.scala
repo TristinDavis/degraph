@@ -1,13 +1,14 @@
-package de.schauderhaft.degraph.graph
+
 
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.ShouldMatchers
-
 import scalax.collection.edge.LkDiEdge
 import scalax.collection.mutable.{ Graph => SGraph }
-import scalax.collection.mutable.Graph.apply$default$3
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import scalax.collection.mutable.{ Graph => SGraph }
 
 @RunWith(classOf[JUnitRunner])
 class GraphCycleTest extends FunSuite with ShouldMatchers {
@@ -34,6 +35,4 @@ class GraphCycleTest extends FunSuite with ShouldMatchers {
 case class SimpleNode(
     nodeType: String,
     name: String) {
-
-    def types = Set(nodeType)
 }
