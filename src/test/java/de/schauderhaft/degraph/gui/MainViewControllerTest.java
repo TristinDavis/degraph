@@ -17,6 +17,8 @@ import de.schauderhaft.degraph.java.JavaHierarchicGraph;
  * Default - Graph for tests is the chess-graph
  * 
  */
+
+// these tests are mainly testing the graph implementation
 public class MainViewControllerTest {
 
 	private MainViewController underTest;

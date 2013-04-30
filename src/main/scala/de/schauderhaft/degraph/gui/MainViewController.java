@@ -19,6 +19,17 @@ import de.schauderhaft.degraph.model.Node;
  * Controller for the main window which includes 0-n nodeViews
  * 
  */
+/*
+ * tests I'd consider writing:
+ * 
+ * 
+ * @FXML does some dependency injection. Does it work? are all dependencies set,
+ * when wired to a matching configuration file?
+ * 
+ * Is the layout working? are all nodes displayed? How do I test a node for
+ * being displayed? Do they meet the requirement of not overlapping? Most of
+ * this stuff does not belong in the controller, but in a 'Layouter'
+ */
 public class MainViewController extends ScrollPane {
 	@FXML
 	private ResourceBundle resources;
@@ -36,6 +47,9 @@ public class MainViewController extends ScrollPane {
 	private final JavaHierarchicGraph graph;
 
 	public MainViewController(JavaHierarchicGraph graph) {
+		// there is a lot of stuff in the constructor ... especially the loading
+		// of the configuration file is a rather strong dependenncy
+		// maybe this shoudl go into a separate class
 		this.graph = graph;
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"MainView.fxml"));
@@ -49,6 +63,7 @@ public class MainViewController extends ScrollPane {
 		}
 	}
 
+	// drop this method, it is just debugging code
 	@FXML
 	void onMouseClicked(MouseEvent event) {
 		System.out.println("KLickMainView");
@@ -56,11 +71,16 @@ public class MainViewController extends ScrollPane {
 
 	@FXML
 	void initialize() {
+		// lose null checks, write a test instead. If this breaks nobody will
+		// check anything, it's just broken
 		assert scrollPane != null : "fx:id=\"mainView\" was not injected: check your FXML file 'MainView.fxml'.";
 
 		Set<Node> topNodes = graph.topNodes();
+		// lose null checks
 		assert topNodes != null : "no data";
 
+		// weak method name, a void method with side effects is hard to test.
+		// Make this a function and move it in a separate class.
 		organizeNodes(topNodes);
 
 	}
