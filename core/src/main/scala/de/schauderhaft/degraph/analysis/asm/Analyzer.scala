@@ -41,12 +41,3 @@ object Analyzer extends AnalyzerLike {
 
 }
 
-private class StreamToGraphParser(categorizer: (Node) => Node, filter: (Node) => Boolean) {
-
-  val g = new Graph(categorizer, filter, new NoSelfReference(categorizer))
-
-  def parseStream(is: InputStream): Unit = {
-    val reader = new ClassReader(new BufferedInputStream(is))
-    reader.accept(new GraphBuildingClassVisitor(g), 0)
-  }
-}
