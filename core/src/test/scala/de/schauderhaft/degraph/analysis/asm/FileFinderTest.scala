@@ -1,5 +1,6 @@
 package de.schauderhaft.degraph.analysis.asm
 
+import de.schauderhaft.degraph.analysis.base.FileFinder
 import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -53,17 +54,17 @@ with BeforeAndAfterAll {
 
   test("FileFinder should only find class or jar files") {
     new FileFinder(tempDir.getAbsolutePath).find().foreach(
-      f => f.getName() should (endWith(".class") or endWith(".jar")))
+      f => f.getName should (endWith(".class") or endWith(".jar")))
   }
 
   test("FileFinder should find the class file") {
     new FileFinder(tempDir.getAbsolutePath).find()
-      .filter(_.getName().endsWith(".class")) should not be ('empty)
+      .filter(_.getName.endsWith(".class")) should not be 'empty
   }
 
   test("FileFinder should find the jar file") {
     new FileFinder(tempDir.getAbsolutePath).find()
-      .filter(_.getName().endsWith(".jar")) should not be ('empty)
+      .filter(_.getName.endsWith(".jar")) should not be 'empty
   }
 
   test("FileFinder should find File in subdir dir when searching for file in current directory") {
