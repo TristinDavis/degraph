@@ -15,9 +15,17 @@ import de.schauderhaft.degraph.analysis._
 class AnalyzerTest extends FunSuite {
   private val testClassFolder = System.getProperty("java.class.path")
   println(testClassFolder)
+
+  def timed[A] (label : String,  x : => A) : A= {
+    val start = System.currentTimeMillis()
+    val result = x
+    println(label + " " + (System.currentTimeMillis() - start))
+    result
+  }
+
   private val graphs = Map(
-    "asm" -> asm.Analyzer.analyze(testClassFolder, x => x, _ => true),
-    "constpool" -> constpool.Analyzer.analyze(testClassFolder, x => x, _ => true)
+    "asm" -> timed("asm", asm.Analyzer.analyze(testClassFolder, x => x, _ => true)),
+    "constpool" -> timed("constpool",constpool.Analyzer.analyze(testClassFolder, x => x, _ => true))
   )
 
 
@@ -41,7 +49,7 @@ class AnalyzerTest extends FunSuite {
 
 
     test("Selftest: example classes got analyzed") {
-      nodeByString("de.schauderhaft.degraph.examples.SubClass") should not be (None)
+      nodeByString("de.schauderhaft.degraph.examples.SubClass") should not be None
     }
 
     test("Dependency from sub to superclass is found") {
