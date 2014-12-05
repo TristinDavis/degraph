@@ -106,7 +106,11 @@ private class ConstPoolStreamToGraphParser(
     val pointer = constPool.collect({
       case p: PointerConstPoolEntry => constPool(p.index-1)
     })
-    println(pointer.toList)
+
+    bis.skipBytes(2)
+
+    val thisClass = constPool(constPool(bis.readUnsignedShort()-1).asInstanceOf[PointerConstPoolEntry].index -1)
+    println(thisClass)
   }
 }
 
