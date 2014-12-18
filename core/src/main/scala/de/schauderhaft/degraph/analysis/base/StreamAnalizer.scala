@@ -4,7 +4,6 @@ import java.io.{File, FileInputStream}
 import java.util.zip.ZipFile
 
 import de.schauderhaft.degraph.analysis.AnalyzerLike
-import de.schauderhaft.degraph.analysis.base.FileFinder
 import de.schauderhaft.degraph.graph.Graph
 
 abstract class StreamAnalizer extends AnalyzerLike {

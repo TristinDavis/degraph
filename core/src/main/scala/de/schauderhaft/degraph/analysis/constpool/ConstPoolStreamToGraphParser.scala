@@ -5,7 +5,9 @@ import java.io.{DataInputStream, BufferedInputStream, InputStream}
 import de.schauderhaft.degraph.analysis.NoSelfReference
 import de.schauderhaft.degraph.analysis.base.StreamToGraphParser
 import de.schauderhaft.degraph.graph.Graph
-import de.schauderhaft.degraph.model.Node
+import de.schauderhaft.degraph.model.{SimpleNode, Node}
+
+import scala.collection.mutable
 
 
 private class ConstPoolStreamToGraphParser(
@@ -50,6 +52,36 @@ private class ConstPoolStreamToGraphParser(
   )
 
   val g = new Graph(categorizer, filter, new NoSelfReference(categorizer))
+
+
+  def classNode(slashSeparatedName: String): SimpleNode = {
+    if (slashSeparatedName.contains(";"))
+      new IllegalArgumentException("parameter has unexpected content. This is an internal error, please open a bug for degraph with this output: " + slashSeparatedName).printStackTrace()
+    SimpleNode.classNode(slashSeparatedName.replace("/", "."))
+  }
+
+  def classNodeFromSingleType(singleTypeDescription: String) = {
+    val Pattern = """\[*L([\w/$]+);""".r
+    singleTypeDescription match {
+      case Pattern(x) => classNode(x)
+      case _ => classNode(singleTypeDescription)
+    }
+  }
+
+  def classNodeFromDescriptor(desc: String): Set[SimpleNode] = {
+    def internal: Set[SimpleNode] =
+      if (desc == null || desc == "")
+        Set()
+      else {
+        val pattern = """(?<=L)([\w/$]+)(?=[;<])""".r
+        val matches = pattern.findAllIn(desc)
+        matches.map(classNode(_)).toSet
+      }
+
+
+    internal
+  }
+
 
   private def readIsJvmFile(stream: DataInputStream) = {
     stream.readInt() == 0xCAFEBABE
@@ -103,14 +135,28 @@ private class ConstPoolStreamToGraphParser(
       index += 1
     }
 
-    val pointer = constPool.collect({
-      case p: PointerConstPoolEntry => constPool(p.index-1)
-    })
+
+    val pointer = for {
+      cp <- constPool
+      ns = cp match {
+        case p: ClassPointer => Set(classNodeFromSingleType(constPool(p.index - 1).asInstanceOf[Utf8].content))
+        case p: DescriptorPointer => classNodeFromDescriptor(constPool(p.index - 1).asInstanceOf[Utf8].content)
+        case _ => Set[SimpleNode]()
+      }
+      n <- ns
+    } yield n
 
     bis.skipBytes(2)
 
-    val thisClass = constPool(constPool(bis.readUnsignedShort()-1).asInstanceOf[PointerConstPoolEntry].index -1)
-    println(thisClass)
+    val thisClass = constPool(constPool(bis.readUnsignedShort() - 1).asInstanceOf[PointerConstPoolEntry].index - 1).asInstanceOf[Utf8]
+    val thisClassNode = classNode(thisClass.content)
+
+    for {
+      p <- pointer
+      if thisClassNode != p
+    } {
+      g.connect(thisClassNode, p)
+    }
   }
 }
 
@@ -123,7 +169,7 @@ object DoubleEntry extends ConstPoolEntry
 case class Utf8(content: String) extends ConstPoolEntry
 
 sealed trait PointerConstPoolEntry extends ConstPoolEntry {
-  def index : Int
+  def index: Int
 }
 
 case class ClassPointer(index: Int) extends PointerConstPoolEntry
